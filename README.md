@@ -4,8 +4,8 @@ If you are interested in replicating this report, follow these steps:
 2) Download and install the free Desktop version of RStudio from the RStudio website (https://rstudio.com/products/rstudio/download/).
 3) Download two files from this repository, `Isolation_R_Markdown.Rmd` and `isolation.csv`, and save them together in the **same folder**. You can do this by using the green `download` button in the top right corner of the file window or by clicking on each file separately and downloading.
 4) Open RStudio.
-6) Use the File menu in RStudio to open the `Isolation_R_Markdown.Rmd` file you saved from wherever you saved it. 
-7) There is a section of the file that has instructions about how to install necessary packages. Follow the instructions to make sure they are available.
-8) Click "Knit" at the top of the window that shows all the R code, it has a tiny blue ball of yarn next to it.
-8) There will be some activity in the lower R Markdown pane and a new windown should open containing the an html output version.
+5) In the lower right pane of RStudio click on packages, Install, then type in mirt in the dialogue and click on install. Once mirt is installed, the Markdown file should run smoothly.
+6) Use the File menu in RStudio to open the `Isolation_R_Markdown.Rmd` file you saved from wherever you saved it, note: make sure the 'isolation.csv' file is in the same dirctory. 
+7) Click "Knit" at the top of the window (upper left pane) that shows all the R code, it has a tiny blue ball of yarn next to it.
+8) There will be some activity in the lower left RStudio pane and a new viewer window will open with the report displayed.
 
