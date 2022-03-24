@@ -1,0 +1,134 @@
+---
+title: "Item Response Theory Analysis of the ESSP Social Isolation Scale"
+author: "Jerry Bean & Natasha Bowen"
+date: "2/20/2021"
+output: html_document
+---
+This document allows a social work  researcher to replicate the IRT analysis presented in our recent article "Item Response Theory and Confirmatory Factor Analysis: Complementary Approaches for Scale Development". Running the "Isolation-R-Markdown.Rmd" file in RStudio will produce the results we presented in that article. You are encouraged to refer to the article for a full discussion of each of these results.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+We load the R mirt library and read the data file as follows:
+
+```{r, load data and library, echo=TRUE, message=FALSE, warning=FALSE}
+# Use the library command to load libraries
+library(mirt)
+```
+
+```{r echo=TRUE}
+# Read a csv data file and define our isolation scale items
+data <- read.csv("isolation.csv", header = TRUE, sep=",")
+isolation <-(data[,1:5])
+```
+
+Using mirt, We define a graded response model and fit a full information maximum likelihood fitting function. We also request fit indexes from the M2 family of GRM limited information indexes. 
+
+```{r model, echo = TRUE}
+# We define a graded response model 
+mod1 <- (mirt(isolation, 1, verbose = FALSE, itemtype = 'graded', SE = TRUE))
+options(digits = 2)
+# M2 is a family of limited information model fit indexes useful for GRMs
+M2(mod1, type = "C2") 
+```
+
+Using various recommended interpretation frameworks for fit indexes, we conclude we have a plausible GRM.
+
+We check the fit of each item:
+
+```{r, echo=TRUE}
+# Item S_X2 fit indexes 
+itemfit(mod1, fit_stats = "S_X2")
+```
+
+Based on RMSEA values, items seem to have a good fit.
+
+### Item-trait relationship details:
+
+Item relationships with the latent trait can be expressed using two different parameterizations --- IRT based parameters and factor analysis parameters. They are mathematically related.
+
+IRT item parameters are shown below —-- a-parameters are referred to as slope or discrimination parameters and are measures of the strength of the relationship between a item and the latent variable; b-parameters are
+referred to as location parameters and are interpreted as the point on theta where a respondent has a .5 
+probability of responding to a category or higher. 
+
+```{r IRT parameters, echo=TRUE}
+# IRT parameters
+coef(mod1, IRTpars = TRUE, simplify = TRUE)
+```
+
+Factor analysis parameters are shown next --- F1 parameters are factor loadings and can be interpreted as a strength of the relationship between an item and the latent variable; h2 parameters are squared values of factor loadings and represent variance accounted for in an item by the latent trait.
+
+```{r FA parameters, echo=TRUE}
+# FA parameters
+summary(mod1)
+```
+
+\newpage
+
+A strength of IRT is the ability to examine item and scale characteristics using various plots. Graphs are particularly helpful in determining how items and the scale operate along the isolation continuum of scores (theta).
+
+### Category characteristic curves:
+
+```{r, echo=TRUE}
+bwtheme <- standard.theme(color=FALSE)
+plot(mod1, type='trace', which.item = c(1,2,3,4,5), facet_items=T, as.table = TRUE,
+           auto.key=list(points=F, lines=T, columns=3, space = 'top', cex = .8),
+           par.settings=bwtheme,
+           theta_lim = c(-3, 3), main="")
+```
+
+The trace lines show how the probability of responding to a category for an item rises and then falls as theta increases.
+
+\newpage
+
+### Item information curves:
+
+```{r, echo=TRUE}
+plot(mod1, type='infotrace', which.item = c(1,2,3,4,5), facet_items=F, as.table = TRUE,
+           auto.key=list(points=F, lines=T, columns=1, space = 'right', cex = .8), 
+           par.settings=bwtheme,
+           theta_lim = c(-3, 3), main="")
+```
+
+Information is a statistical concept that measures the strength of the relationship between an item and the latent trait. Higher a-parameters indicate higher information.
+
+\newpage
+
+### Scale information and standard errors:
+
+```{r, echo=TRUE}
+bwtheme <- standard.theme(color=FALSE)
+plotinse <- plot(mod1, type = 'infoSE', theta_lim = c(-3,3),main = "", par.settings=bwtheme)
+plotinse$legend$right$args$label <- expression(paste("Standard Error ",(theta)))
+plotinse$legend$left$args$label <- expression(paste("Information ",(theta)))
+plotinse
+```
+
+Item information can be summed to form a test (scale) information function where higher values indicate a stronger relationship between the scale and the latent trait. Conditional standard errors are measures of the 
+precision of score estimates. Information and standard errors are mathematically related with higher
+information values giving rise to smaller standard errors.
+
+\newpage
+
+### Conditional reliability:
+
+```{r, echo=TRUE}
+plot(mod1, type = 'rxx', theta_lim = c(-3,3), main = "", par.settings=bwtheme)
+```
+
+Conditional reliability, information, and standard errors also are mathematically related with higher
+information and lower standard errors giving rise to higher conditional reliability.
+
+\newpage
+
+### Estimated thetas and expected test (scale) scores:
+
+```{r, echo=TRUE}
+plottcc <- plot(mod1, type = 'score', theta_lim = c(-3,3), main = "", par.settings=bwtheme)
+plottcc$xlab <- expression(paste("Model-based Estimated Score  ",(theta),))
+plottcc$ylab <- expression(paste("Expected True Score"))
+plottcc
+```
+
+This plot shows the relationship between estimated theta scores and estimated true scores. These estimated true scores are model-based meaning that they are generated using item parameters and are expressed in the original scale metric.
