@@ -1,6 +1,6 @@
 # Isolation-Markdown
 If you are interested in replicating the IRT analysis from the Bean-Bowen ESSP Social Isolation Scale article, 
-follow these steps: article, follow these steps:
+follow these steps:
 
 1) Download and install R from the Comprehensive R Archive Network (the CRAN: https://cran.r-project.org).
 2) Download and install the free Desktop version of RStudio from the RStudio website (https://rstudio.com/products/rstudio/download/).
